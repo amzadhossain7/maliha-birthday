@@ -2,50 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise at 12 AM</title>
+  <title>Mobile Birthday Surprise</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
 
     body {
-      margin:0; padding:0;
-      height:100vh; display:flex;
-      justify-content:center; align-items:center;
+      margin: 0; padding: 0;
+      height: 100vh;
+      display: flex; justify-content: center; align-items: center;
       background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      font-family:'Poppins',sans-serif; overflow:hidden;
-      text-align:center;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      text-align: center;
     }
 
     #countdown {
-      font-size:4rem; font-weight:bold;
-      color:#fff; text-shadow:0 0 15px #00f,0 0 25px #0ff;
+      font-size: 5rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 15px #00f, 0 0 25px #0ff;
     }
 
     #message {
-      font-size:2.5rem; font-weight:bold; color:#fff;
-      display:none; background:rgba(0,0,0,0.3);
-      padding:15px 25px; border-radius:20px;
-      box-shadow:0 0 25px rgba(255,255,255,0.6);
-      animation:fadeIn 2s ease forwards, glow 2s infinite alternate;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #fff;
+      display: none;
+      background: rgba(0,0,0,0.3);
+      padding: 15px 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.6);
+      animation: fadeIn 2s ease forwards, glow 2s infinite alternate;
     }
 
-    @keyframes fadeIn { from{opacity:0; transform:translateY(50px);} to{opacity:1; transform:translateY(0);} }
-    @keyframes glow { from{ text-shadow:0 0 15px #ff4081,0 0 25px #ffeb3b;} to{ text-shadow:0 0 25px #00ffea,0 0 35px #ff4081;} }
-
-    canvas{ position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none;}
-    .balloon{
-      position:absolute; bottom:-100px; width:50px; height:70px; border-radius:50%;
-      opacity:0.9; animation: floatUp linear forwards;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes floatUp{0%{transform:translateY(0) rotate(0deg);} 100%{transform:translateY(-120vh) rotate(360deg);}}
-    @media(max-width:600px){ #countdown{font-size:3rem;} #message{font-size:2rem;} .balloon{width:35px;height:50px;} }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 15px #ff4081, 0 0 25px #ffeb3b; }
+      to { text-shadow: 0 0 25px #00ffea, 0 0 35px #ff4081; }
+    }
+
+    canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%; pointer-events: none;
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -100px;
+      width: 50px; height: 70px;
+      border-radius: 50% 50% 50% 50%;
+      opacity: 0.9;
+      animation: floatUp linear forwards;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-120vh) rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      #countdown { font-size: 4rem; }
+      #message { font-size: 2rem; padding: 10px 20px; }
+      .balloon { width: 35px; height: 50px; }
+    }
   </style>
 </head>
 <body>
+
   <div id="countdown"></div>
   <div id="message">🎂 Happy Birthday Faria! 🎶</div>
 
+  <!-- External audio -->
   <audio id="song" src="https://vole.wtf/happy-birthday-orchestral.mp3"></audio>
+
   <canvas id="confetti"></canvas>
 
   <script>
@@ -55,45 +89,65 @@
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
 
-    function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
-    window.addEventListener("resize",resizeCanvas); resizeCanvas();
+    // Resize canvas
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
 
-    // Confetti
-    let confetti=[];
-    for(let i=0;i<180;i++){ confetti.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*6+2, d:Math.random()*0.05+0.01, color:`hsl(${Math.random()*360},100%,50%)`}); }
-    function drawConfetti(){ ctx.clearRect(0,0,canvas.width,canvas.height); confetti.forEach(c=>{ ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fillStyle=c.color; ctx.fill(); c.y+=c.d*10; if(c.y>canvas.height){c.y=-10;c.x=Math.random()*canvas.width;} }); }
+    // Confetti particles
+    let confetti = [];
+    for(let i=0;i<180;i++){
+      confetti.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*6+2,d:Math.random()*0.05+0.01,color:`hsl(${Math.random()*360},100%,50%)`});
+    }
+    function drawConfetti(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      confetti.forEach(c=>{
+        ctx.beginPath();
+        ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
+        ctx.fillStyle=c.color;
+        ctx.fill();
+        c.y+=c.d*10;
+        if(c.y>canvas.height){c.y=-10;c.x=Math.random()*canvas.width;}
+      });
+    }
     function startConfetti(){ setInterval(drawConfetti,20); }
 
-    // Balloons
+    // Balloon function
     function createBalloons(count=20){
-      const colors=["#FF3E96","#FF8C00","#FFD700","#ADFF2F","#00CED1","#FF1493"];
+      const colors = ["#FF3E96","#FF8C00","#FFD700","#ADFF2F","#00CED1","#FF1493"];
       for(let i=0;i<count;i++){
-        const b=document.createElement("div");
-        b.classList.add("balloon"); b.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
-        b.style.left=Math.random()*90+"vw"; b.style.animationDuration=5+Math.random()*5+"s";
-        document.body.appendChild(b); setTimeout(()=>{b.remove();},10000);
+        const balloon = document.createElement("div");
+        balloon.classList.add("balloon");
+        balloon.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+        balloon.style.left = Math.random()*90 + "vw";
+        balloon.style.animationDuration = 5 + Math.random()*5 + "s";
+        document.body.appendChild(balloon);
+        setTimeout(()=>{ balloon.remove(); },10000); // remove after animation
       }
     }
 
     // Mobile audio workaround
     let audioStarted=false;
-    document.body.addEventListener("click",()=>{ if(!audioStarted){ song.play().catch(()=>{}); audioStarted=true; } },{once:true});
+    document.body.addEventListener("click",()=>{
+      if(!audioStarted){ song.play().catch(()=>{}); audioStarted=true; }
+    },{once:true});
 
-    // Countdown to 12:00 AM
-    function updateCountdown(){
-      const now=new Date();
-      let target=new Date();
-      target.setHours(24,0,0,0); // next midnight
-      let diff=Math.floor((target-now)/1000);
-      if(diff<=0){
-        cd.style.display="none"; msg.style.display="block"; song.play().catch(()=>{}); startConfetti(); createBalloons(20); return;
+    // Automatic countdown
+    let timeLeft=10; // demo 10 sec
+    cd.textContent=timeLeft;
+    const timer = setInterval(()=>{
+      timeLeft--;
+      cd.textContent=timeLeft;
+      if(timeLeft<=0){
+        clearInterval(timer);
+        cd.style.display="none";
+        msg.style.display="block";
+        song.play().catch(()=>{});
+        startConfetti();
+        createBalloons(20); // 20 balloons
       }
-      const h=Math.floor(diff/3600); const m=Math.floor((diff%3600)/60); const s=diff%60;
-      cd.textContent=(`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`);
-      setTimeout(updateCountdown,1000);
-    }
-    updateCountdown();
-
+    },1000);
   </script>
+
 </body>
 </html>
